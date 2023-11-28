@@ -75,7 +75,7 @@ async function main() {
 			Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
 			{ body: guildCommands },
 		);
-		console.log(`Loaded ${guildCommands.length} guild commands onto SkoopySquad!`);
+		console.log(`Loaded ${guildCommands.length} guild commands onto Beaver Builders!`);
 
 		// refreshes global commands
 		await rest.put(Routes.applicationCommands(CLIENT_ID), {
