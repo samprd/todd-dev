@@ -1,0 +1,17 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore TypeScript build output
+build/
+
+# Ignore environment variables file
+.env
+
+# Ignore editor-specific files and directories
+.vscode/
+
+# Ignore log files
+*.log
+
+# Ignore package-lock.json file (if using npm)
+package-lock.json
