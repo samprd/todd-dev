@@ -1,4 +1,4 @@
-import helloCommand from "./commands/hello.js";
+import helloCommand from "./commands/hello.mjs";
 
 // sets all commands
 const commands: any = [helloCommand];

@@ -9,7 +9,7 @@ import {
 	EmbedBuilder,
 } from 'discord.js';
 
-import commandsList from "./commands.js";
+import commandsList from "./commands.mjs";
 
 const ownerId = '835278133732048927';
 
