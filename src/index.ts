@@ -15,7 +15,7 @@ const ownerId = '835278133732048927';
 
 // other bot information
 const versionNo = '`Beta 1`';
-const discordjsVer = '`v14.14.1`';
+const discordjsVersion = '`v14.14.1`';
 
 config();
 
@@ -45,7 +45,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 	switch (interaction.commandName){
 		case "hello": {
 			const helloEmbed = new EmbedBuilder()
-				.setTitle(`Hi there, I'm ${botName}! Beavers are the best!`)
+				.setTitle(`Hi there, I'm ${botName}! Beavers are the best! I am currently used discord.js ${discordjsVersion}.`)
 				.setColor(0xffff00);
 			
 			interaction.reply({ embeds: [helloEmbed] });
