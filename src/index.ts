@@ -45,7 +45,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 	switch (interaction.commandName){
 		case "hello": {
 			const helloEmbed = new EmbedBuilder()
-				.setTitle(`Hi there, I'm ${botName}! Beavers are the best! I am currently used discord.js ${discordjsVersion}.`)
+				.setTitle(`Hi there, I'm ${botName}! Beavers are the best! I am currently on discord.js ${discordjsVersion}.`)
 				.setColor(0xffff00);
 			
 			interaction.reply({ embeds: [helloEmbed] });
