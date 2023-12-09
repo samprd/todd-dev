@@ -1,7 +1,11 @@
-import helloCommand from "./commands/hello.js";
+import pingCommand from "./commands/ping.js";
+import beaverCommand from "./commands/beaver.js";
 
 // sets all commands
-const commands: any = [helloCommand];
+const commands = [
+	pingCommand,
+	beaverCommand,
+];
 
 const guildCommands: any = [];
 

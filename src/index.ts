@@ -26,6 +26,8 @@ const CLIENT_ID = process.env.CLIENT_ID;
 // Beaver Builders guild id
 const GUILD_ID = process.env.GUILD_ID;
 
+const PEXELS_API = process.env.PEXELS_API;
+
 // creates client with intents and presence
 const client = new Client({
 	intents: [],
@@ -39,25 +41,70 @@ const botName = "Todd the Beaver";
 client.on("ready", c => console.log(`${c.user.username} has logged in!`));
 
 client.on(Events.InteractionCreate, async (interaction) => {
-	// returns if await interaction is not a chat input command
+	// returns if interaction is not a chat input command
 	if (!interaction.isChatInputCommand()) return;
 
 	switch (interaction.commandName){
-		case "hello": {
-			const helloEmbed = new EmbedBuilder()
-				.setTitle(`Hi there, I'm ${botName}! Beavers are the best! I am currently on discord.js ${discordjsVersion}.`)
-				.setColor(0xffff00);
+		case 'ping': {
+			const uptime = Math.floor((Date.now() - startTime) / 1000);
+			const uptimeSeconds = (uptime % 60).toString();
+			const uptimeMinutes = (Math.floor(uptime / 60) % 60).toString();
+			const uptimeHours = (Math.floor(uptime / (60 * 60)) % 24).toString();
+			const uptimeDays = Math.floor(uptime / (60 * 60 * 24)).toString();
+	
+			const pingEmbed = new EmbedBuilder()
+				.setTitle('Pong!')
+				.setFields(
+					{ name: 'Ping', value: `${Math.abs(Date.now() - interaction.createdTimestamp)}ms`, inline: true },
+					{ name: 'Latency', value: `${client.ws.ping}ms`, inline: true },
+					{ name: 'Uptime', value: `${uptimeDays}d ${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s`, inline: true },
+					{ name: 'Server Count', value: `${client.guilds.cache.size} servers`, inline: true },
+				)
+				.setColor(0xdddddd);
+			await interaction.reply({ embeds: [pingEmbed] });
+	
+			break;
+		} // ping command
+		case 'beaver': {
+			fetch("https://api.pexels.com/v1/search?query=beaver&per_page=20",{
+			headers: {
+				Authorization: PEXELS_API
+			}
+			})
+			.then(resp => {
+				return resp.json();
+			})
+			.then(data => {
+				const photos: any[] = data.photos;
+
+				const originalImageLinks = photos.map(photo => photo.src.original);
+				const photographers = photos.map(photo => photo.photographer);
+				const photoAvgColour = photos.map(photo => photo.avg_color);
+
+				const index = Math.floor(Math.random() * 20);
+
+				const beaverEmbed = new EmbedBuilder()
+					.setTitle("Beaver!")
+					.setImage(originalImageLinks[index])
+					.setThumbnail("https://help.pexels.com/hc/en-us/article_attachments/900007787843")
+					.setColor(photoAvgColour[index])
+					.setFooter({
+						text: `Photo by ${photographers[index]} on Pexels`,
+					});
 			
-			interaction.reply({ embeds: [helloEmbed] });
+				interaction.reply({ embeds: [beaverEmbed] });
+			});			
 
 			break;
-		}
+		} // beaver image command
 		default: {
 			const errorEmbed = new EmbedBuilder()
 				.setTitle("Command does not exist!")
 				.setColor(0xff0000);
 			
 			interaction.reply({ embeds: [errorEmbed] });
+
+			break;
 		}
 	}
 });
