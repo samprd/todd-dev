@@ -97,6 +97,84 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 			break;
 		} // beaver image command
+		case 'tag': {
+			const tag = interaction.options.getString("tag");
+			const target = interaction.options.getUser("target");
+
+			let name = "title";
+			let description = "description";
+			let url = null;
+
+			switch (tag){
+				case "nohello": {
+					name = "nohello";
+					description = "> Please don't just say Hello/Hi in chat when you have a question.";
+					url = "https://nohello.net"
+					break;
+				}
+				case "xyproblem": {
+					name = "The XY Problem";
+					description = "> The XY problem is asking about your attempted solution rather than your actual problem.";
+					url = "https://xyproblem.info/";
+					break;
+				}
+				case "teach2fish": {
+					name = "Give someone a fish, and you'll feed them for a day. Teach someone to fish, and you'll feed them for a lifetime.";
+					description = "> Teaching you the logic behind the answer instead of spoonfeeding it will enable you to learn and solve similar problems independently, ultimately saving you time in the future.";
+					break;
+				}
+				case "noscreenshots": {
+					name = "No screenshots of code";
+					description = "> They're hard to read and correct, instead, you should use codeblocks for small amounts of code(`/tag codeblocks`) or external repos for larger amounts(`/tag bin`)."
+					break;
+				}
+				case "bin": {
+					name = "Use external repos";
+					description = "> Use things like https://sourceb.in, https://gist.github.com, or https://hatebin.com/ to share large amounts of code!"
+					break;
+				}
+				case "codeblocks": {
+					name = "Use codeblocks"
+					description = "> You can format your code as codeblocks with ``` to look like this:\n\```py\nprint('hello world')\n```";
+					break;
+				}
+				case "googleit": {
+					name = "Try Googling It"
+					description = "> Before you ask a question on the server, try searching on Google or Stack Overflow first!"
+					break;
+				}
+				default: {
+					name = "Unknown Tag";
+					description = "Error: tag not found!";
+					break;
+				}
+			}
+
+			const tagEmbed = new EmbedBuilder()
+				.setTitle(name)
+				.setDescription(description)
+				.setURL(url)
+				.setColor(0xdda646);
+			
+			if (target){
+				interaction.reply({ content: `<@${target.id}>`, embeds: [tagEmbed] });
+			} else{
+				interaction.reply({ embeds: [tagEmbed] });
+			}
+
+			break;
+		}
+		case 'mdndocs': {
+			const query = interaction.options.getString("query") || "javascript";
+
+			const mdnEmbed = new EmbedBuilder()
+				.setTitle("Query searched!")
+				.setColor(0xff0000);
+			
+			interaction.reply({ embeds: [mdnEmbed] });
+
+			break;
+		} // searches the MDN web docs
 		default: {
 			const errorEmbed = new EmbedBuilder()
 				.setTitle("Command does not exist!")
