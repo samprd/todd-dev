@@ -13,13 +13,6 @@ import {
 
 import commandsList from "./commands.js";
 
-import { readFileSync } from 'fs';
-
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 const ownerId = '835278133732048927';
 
 // other bot information
@@ -202,27 +195,35 @@ client.on(Events.InteractionCreate, async (interaction) => {
 client.on(Events.GuildMemberAdd, async (member) => {
 	if (member.guild.id != GUILD_ID) return;
 
-	// Read the JSON file
-	const jsonData = JSON.parse(readFileSync(join(__dirname, 'messages.json'), 'utf8'));
+	fetch('https://api.github.com/gists/59022886456c8d3a3515396c002e5eab')
+		.then(response => response.json())
+		.then(data => {
+			const file = data.files['messages.json'];
+    		const content = file.content;
+    		const jsonData = JSON.parse(content);
 
-	// Get a random join message index
-	const randomIndex = Math.floor(Math.random() * jsonData.joinMessages.length);
+			// Get a random join message index
+			const randomIndex = Math.floor(Math.random() * jsonData.joinMessages.length);
 
-	// Get the random join message
-	const randomJoinMessage = jsonData.joinMessages[randomIndex];
+			// Get the random join message
+			const randomJoinMessage = jsonData.joinMessages[randomIndex];
 
-	console.log(randomJoinMessage);
+			console.log(randomJoinMessage);
 
-	// Insert the user's username into the join message
-	const formattedJoinMessage = randomJoinMessage.replace("{userName}", member.user.displayName);
-	
-	console.log(formattedJoinMessage);
+			// Insert the user's username into the join message
+			const formattedJoinMessage = randomJoinMessage.replace("{userName}", member.user.displayName);
+			
+			console.log(formattedJoinMessage);
 
-	const channel = client.channels.cache.get('1174309146816950303'); // #new-beavers
-    if (channel && channel.type == ChannelType.GuildText) {
-    	channel.send(formattedJoinMessage);
-		console.log ("message sent");
-    }
+			const channel = client.channels.cache.get('1174309146816950303'); // #new-beavers
+			if (channel && channel.type == ChannelType.GuildText) {
+				channel.send(formattedJoinMessage);
+				console.log ("message sent");
+			}
+		})
+		.catch(error => {
+			console.error('Error fetching messages.json:', error);
+		});
 });
 
 async function main() {
