@@ -211,12 +211,17 @@ client.on(Events.GuildMemberAdd, async (member) => {
 	// Get the random join message
 	const randomJoinMessage = jsonData.joinMessages[randomIndex];
 
+	console.log(randomJoinMessage);
+
 	// Insert the user's username into the join message
 	const formattedJoinMessage = randomJoinMessage.replace("{userName}", member.user.displayName);
 	
+	console.log(formattedJoinMessage);
+
 	const channel = client.channels.cache.get('1174309146816950303'); // #new-beavers
     if (channel && channel.type == ChannelType.GuildText) {
     	channel.send(formattedJoinMessage);
+		console.log ("message sent");
     }
 });
 
