@@ -7,9 +7,18 @@ import {
 	Routes,
 	Events,
 	EmbedBuilder,
+	ChannelType,
+	GatewayIntentBits,
 } from 'discord.js';
 
 import commandsList from "./commands.js";
+
+import { readFileSync } from 'fs';
+
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const ownerId = '835278133732048927';
 
@@ -30,7 +39,10 @@ const PEXELS_API = process.env.PEXELS_API;
 
 // creates client with intents and presence
 const client = new Client({
-	intents: [],
+	intents: [
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.Guilds,
+	],
 });
 
 // creates instance of REST(v10) using token
@@ -185,6 +197,27 @@ client.on(Events.InteractionCreate, async (interaction) => {
 			break;
 		}
 	}
+});
+
+client.on(Events.GuildMemberAdd, async (member) => {
+	if (member.guild.id != GUILD_ID) return;
+
+	// Read the JSON file
+	const jsonData = JSON.parse(readFileSync(join(__dirname, 'messages.json'), 'utf8'));
+
+	// Get a random join message index
+	const randomIndex = Math.floor(Math.random() * jsonData.joinMessages.length);
+
+	// Get the random join message
+	const randomJoinMessage = jsonData.joinMessages[randomIndex];
+
+	// Insert the user's username into the join message
+	const formattedJoinMessage = randomJoinMessage.replace("{userName}", member.user.displayName);
+	
+	const channel = client.channels.cache.get('1174309146816950303'); // #new-beavers
+    if (channel && channel.type == ChannelType.GuildText) {
+    	channel.send(formattedJoinMessage);
+    }
 });
 
 async function main() {
