@@ -211,7 +211,7 @@ client.on(Events.GuildMemberAdd, async (member) => {
 			console.log(randomJoinMessage);
 
 			// Insert the user's username into the join message
-			const formattedJoinMessage = randomJoinMessage.replace("{userName}", member.user.displayName);
+			const formattedJoinMessage = randomJoinMessage.replace("{userName}", `<@${member.user.id}>`);
 			
 			console.log(formattedJoinMessage);
 
