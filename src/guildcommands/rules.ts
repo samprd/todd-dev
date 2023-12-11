@@ -22,12 +22,12 @@ const rulesCommand = new SlashCommandBuilder()
 				{ name: 'Rule 8: Avoid using automated tools like ChatGPT to generate answers', value: 'rule8' },
 				{ name: 'Rule 9: Follow Discord\'s Community Guidelines and Terms of Service', value: 'rule9' },
 				{ name: 'Rule 10: Have fun!', value: 'rule10' },
-			)
-		)
+			),
+		),
 	)
 	.addSubcommand((subcommand) => subcommand
 		.setName('viewall')
-		.setDescription('Views all rules in a list')
+		.setDescription('Views all rules in a list'),
 	);
 
 export default rulesCommand.toJSON();
