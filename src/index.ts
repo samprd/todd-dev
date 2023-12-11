@@ -19,6 +19,50 @@ const ownerId = '835278133732048927';
 const versionNo = '`Beta 1`';
 const discordjsVersion = '`v14.14.1`';
 
+const MESSAGES = '59022886456c8d3a3515396c002e5eab'; // Github Gist id for messages.json
+const RULES = '7699fb29df4033bc70fe52de17f78849'; // Github Gist id for rules.json
+
+async function getRule(index = 0) {
+	let rule = 'Rule 0';
+	let description = 'Unknown';
+  
+	try {
+		const response = await fetch(`https://api.github.com/gists/${RULES}`);
+		const data = await response.json();
+		const file = data.files['rules.json'];
+		const content = file.content;
+		const jsonData = JSON.parse(content);
+
+		rule = jsonData.rules[index];
+		description = jsonData.descriptions[index];
+	} catch (error) {
+		console.error('Error fetching rules.json:', error);
+	}
+  
+	return [rule, description];
+}
+
+async function getAllRules(){
+	let ruleList = '';
+
+	try {
+		const response = await fetch(`https://api.github.com/gists/${RULES}`);
+		const data = await response.json();
+		const file = data.files['rules.json'];
+		const content = file.content;
+		const jsonData = JSON.parse(content);
+
+		for (let index = 0; index < jsonData.rules.length; index++) {
+			const rule = `${index + 1}. ${jsonData.rules[index]}\n> ${jsonData.descriptions[index]}\n`;
+			ruleList = ruleList.concat(rule);
+		}
+	} catch (error) {
+		console.error('Error fetching rules.json:', error);
+	}
+
+	return ruleList;
+}
+
 config();
 
 // token of the bot
@@ -180,6 +224,86 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 			break;
 		} // searches the MDN web docs
+		case 'rules': {
+			switch (interaction.options.getSubcommand()){
+				case 'view': {
+					const ruleId = interaction.options.getString('rule');
+					let ruleIndex;
+
+					switch (ruleId){
+						case 'rule1': {
+							ruleIndex = 0;
+							break;
+						}
+						case 'rule2': {
+							ruleIndex = 1;
+							break;
+						}
+						case 'rule3': {
+							ruleIndex = 2;
+							break;
+						}
+						case 'rule4': {
+							ruleIndex = 3;
+							break;
+						}
+						case 'rule5': {
+							ruleIndex = 4;
+							break;
+						}
+						case 'rule6': {
+							ruleIndex = 5;
+							break;
+						}
+						case 'rule7': {
+							ruleIndex = 6;
+							break;
+						}
+						case 'rule8': {
+							ruleIndex = 7;
+							break;
+						}
+						case 'rule9': {
+							ruleIndex = 8;
+							break;
+						}
+						case 'rule10': {
+							ruleIndex = 9;
+							break;
+						}
+						default: {
+							ruleIndex = 0;
+							break;
+						}
+					}
+					
+					const rule = await getRule(ruleIndex);
+
+					const ruleEmbed = new EmbedBuilder()
+						.setTitle(rule[0])
+						.setDescription(rule[1])
+						.setColor(0x997e54);
+					
+					interaction.reply({ embeds: [ruleEmbed] });
+
+					break;
+				}
+				case 'viewall': {
+					const ruleList = await getAllRules();
+
+					const ruleListEmbed = new EmbedBuilder()
+						.setTitle('Rules:')
+						.setDescription(ruleList)
+						.setColor(0x997e54);
+					
+					interaction.reply({ embeds: [ruleListEmbed] });
+
+					break;
+				}
+			}
+
+			break;
+		}
 		default: {
 			const errorEmbed = new EmbedBuilder()
 				.setTitle("Command does not exist!")
@@ -195,35 +319,30 @@ client.on(Events.InteractionCreate, async (interaction) => {
 client.on(Events.GuildMemberAdd, async (member) => {
 	if (member.guild.id != GUILD_ID) return;
 
-	fetch('https://api.github.com/gists/59022886456c8d3a3515396c002e5eab')
-		.then(response => response.json())
-		.then(data => {
-			const file = data.files['messages.json'];
-    		const content = file.content;
-    		const jsonData = JSON.parse(content);
+	try {
+		const response = await fetch(`https://api.github.com/gists/${MESSAGES}`);
+		const data = await response.json();
+		const file = data.files['messages.json'];
+		const content = file.content;
+		const jsonData = JSON.parse(content);
 
-			// Get a random join message index
-			const randomIndex = Math.floor(Math.random() * jsonData.joinMessages.length);
+		// Get a random join message index
+		const randomIndex = Math.floor(Math.random() * jsonData.joinMessages.length);
 
-			// Get the random join message
-			const randomJoinMessage = jsonData.joinMessages[randomIndex];
+		// Get the random join message
+		const randomJoinMessage = jsonData.joinMessages[randomIndex];
 
-			console.log(randomJoinMessage);
-
-			// Insert the user's username into the join message
-			const formattedJoinMessage = randomJoinMessage.replace("{userName}", `<@${member.user.id}>`);
-			
-			console.log(formattedJoinMessage);
-
-			const channel = client.channels.cache.get('1174309146816950303'); // #new-beavers
-			if (channel && channel.type == ChannelType.GuildText) {
-				channel.send(formattedJoinMessage);
-				console.log ("message sent");
-			}
-		})
-		.catch(error => {
-			console.error('Error fetching messages.json:', error);
-		});
+		// Insert the user's username into the join message
+		const formattedJoinMessage = randomJoinMessage.replace("{userName}", `<@${member.user.id}>`);
+		
+		const channel = client.channels.cache.get('1174309146816950303'); // #new-beavers
+		if (channel && channel.type == ChannelType.GuildText) {
+			channel.send(formattedJoinMessage);
+		}
+	
+	} catch (error) {
+		console.error('Error fetching messages.json:', error);
+	}
 });
 
 async function main() {
