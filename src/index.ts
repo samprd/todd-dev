@@ -53,7 +53,7 @@ async function getAllRules(){
 		const jsonData = JSON.parse(content);
 
 		for (let index = 0; index < jsonData.rules.length; index++) {
-			const rule = `${index + 1}. ${jsonData.rules[index]}\n> ${jsonData.descriptions[index]}\n`;
+			const rule = `${index + 1}. ${jsonData.rules[index]}\n`;
 			ruleList = ruleList.concat(rule);
 		}
 	} catch (error) {
